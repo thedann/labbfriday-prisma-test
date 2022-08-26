@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
-import bodyParser from "body-parser";
+
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -12,8 +12,7 @@ const app = express();
  */
 
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 
 // Serves images
 app.use(express.static("public"));
@@ -40,8 +39,8 @@ app.post("/product", async (req: Request, res: Response) => {
   const { id, name } = req.body;
 
   if (!id || !name) {
-    res.json({ message: "no go" });
-    res.statusCode = 500;
+    res.status(500).json({ message: "no go" });
+
     return;
   }
 
@@ -53,8 +52,7 @@ app.post("/product", async (req: Request, res: Response) => {
       },
     })
     .catch((err) => {
-      res.json("error! Could not add your product");
-      res.statusCode = 500;
+      res.status(500).json("error! Could not add your product");
       return;
     });
 
@@ -66,7 +64,7 @@ app.post("/product", async (req: Request, res: Response) => {
     },
   });
 
-  res.json(newlyAddedProduct);
+  res.json(result);
 });
 
 /* eslint-disable */
