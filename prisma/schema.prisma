@@ -10,9 +10,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Layout {
+  FMG
+  LIST
+}
+
 model Block {
-  id        Int     @id @default(autoincrement())
-  name      String  @unique
-  productId String?
-  layout    String
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  products Product[]
+  layout   Layout    @default(FMG)
+}
+
+model Product {
+  id     String  @id
+  name   String
+  blocks Block[]
 }

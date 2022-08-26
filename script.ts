@@ -6,7 +6,7 @@ async function main() {
   const block = await prisma.block.create({
     data: {
       name: "Ett till testblock",
-      productId: "229626",
+      products: { create: [{ id: "156161", name: "pinos födelsedag" }] },
     },
   });
   console.log(block);
