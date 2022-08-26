@@ -11,7 +11,11 @@ async function main() {
   });
   console.log(block);
 
-  const blocks = await prisma.block.findMany();
+  const blocks = await prisma.block.findMany({
+    include: {
+      products: true,
+    },
+  });
   console.log("all my blocks:", blocks);
 }
 
