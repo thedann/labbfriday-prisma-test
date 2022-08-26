@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 
-import { PrismaClient } from "@prisma/client";
+import { Layout, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -28,6 +28,26 @@ app.get("/blocks", async (req: Request, res: Response) => {
     },
   });
   res.json(blocks);
+});
+
+app.patch("/block/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { productIds }: { productIds: string[] } = req.body;
+
+  const productsToAdd = await prisma.product.findMany({
+    where: {
+      id: { in: productIds },
+    },
+  });
+
+  const idNumber = parseInt(id);
+  const post = await prisma.block.update({
+    where: { id: idNumber },
+    data: {
+      products: productsToAdd,
+      layout: Layout.LIST,
+    },
+  });
 });
 
 app.get("/products", async (req: Request, res: Response) => {
@@ -65,6 +85,16 @@ app.post("/product", async (req: Request, res: Response) => {
   });
 
   res.json(result);
+});
+
+app.delete("/product/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const user = await prisma.product.delete({
+    where: {
+      id,
+    },
+  });
+  res.json(user);
 });
 
 /* eslint-disable */
